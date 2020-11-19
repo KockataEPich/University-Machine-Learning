@@ -1,0 +1,217 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <assert.h>
+
+#include "graph.h"
+#include "pq.h"
+#include "sp_algorithms.h"
+
+sssp_result_t *bfs(graph_t const *g, node_t src, node_t dst) {
+  unsigned long long stat_edges_explored=0;
+
+  size_t N = graph_get_num_nodes(g);
+  node_t *pred = CALLOC(node_t,N);
+  weight_t *dist = CALLOC(weight_t,N);
+
+  for(int i = 0; i < N; i++)
+  {
+    dist[i] = weight_inf();
+    pred[i] = INVALID_NODE;
+  }//for
+
+  pred[src] = src;
+  dist[src] = weight_zero();
+
+
+  DPQ_t *pq = DPQ_new(N);
+  DPQ_insert(pq, src, weight_zero());
+  stat_edges_explored++;
+
+  while(!DPQ_is_empty(pq))
+  {
+    node_t nextNode = DPQ_pop_min(pq);
+
+    for (edge_tgt_t const *tgt=graph_succs_begin(g,nextNode);tgt!=graph_succs_end(g,nextNode);++tgt)
+    {
+
+      if(weight_is_inf(dist[tgt->v]))
+      {
+        dist[tgt->v] = weight_add(dist[nextNode], weight_of_int(1));
+        pred[tgt->v] = nextNode;
+        DPQ_insert(pq, tgt->v, dist[tgt->v]);
+        stat_edges_explored++;
+      }
+
+      if(tgt->v == dst)
+      {
+        return sssp_result_new(N,src,dst,false,pred,dist,stat_edges_explored);
+      }//if
+
+    }//for
+
+  }//while
+
+  return sssp_result_new(N,src,dst,false,pred,dist,stat_edges_explored);
+}//BFS
+
+
+sssp_result_t *bellman_ford(graph_t const *g, node_t src)
+{
+
+  unsigned long long edgesRelaxed = 0;
+  bool negative_cycle = false;
+
+  node_t dst = INVALID_NODE;
+
+  size_t N = graph_get_num_nodes(g);
+
+  node_t *pred = CALLOC(node_t,N);
+  weight_t *dist = CALLOC(weight_t,N);
+
+  for(int i = 0; i < N; i++)
+  {
+    dist[i] = weight_inf();
+  //  finished[i] = false;
+    pred[i] = INVALID_NODE;
+  }//for
+
+  pred[src] = src;
+  dist[src] = weight_zero();
+
+  for(size_t i = 0; i < N - 1; i++)
+  {
+    for (edge_tgt_t const *tgt=graph_succs_begin(g,i);tgt!=graph_succs_end(g,i);++tgt)
+    {
+      if(!weight_is_inf(dist[i]) &&  weight_less(weight_add(dist[i], tgt->w), dist[tgt->v]))
+      {
+        dist[tgt->v] = weight_add(dist[i], tgt->w);
+        pred[tgt->v] = i;
+        edgesRelaxed++;
+      }//if
+    }//for
+  }//for
+
+  for(size_t i = 0; i < N - 1; i++)
+  {
+    for (edge_tgt_t const *tgt=graph_succs_begin(g,i);tgt!=graph_succs_end(g,i);++tgt)
+    {
+      if(weight_less(weight_add(dist[i], tgt->w), dist[tgt->v]))
+      {
+        negative_cycle = true;
+        dist[tgt->v] = weight_neg_inf();
+        edgesRelaxed++;
+      }//if
+    }//for
+  }//for
+
+  return sssp_result_new(N,src,dst,negative_cycle,pred,dist,edgesRelaxed);
+
+}//bellman_ford
+
+sssp_result_t *dijkstra(graph_t const *g, node_t src, node_t dst)
+{
+  unsigned long long edgesRelaxed = 0;
+
+  size_t N = graph_get_num_nodes(g);
+
+  node_t *pred = CALLOC(node_t,N);
+  weight_t *dist = CALLOC(weight_t,N);
+
+  for(int i = 0; i < N; i++)
+  {
+    dist[i] = weight_inf();
+  //  finished[i] = false;
+    pred[i] = INVALID_NODE;
+  }//for
+
+  pred[src] = src;
+  dist[src] = weight_zero();
+
+  DPQ_t *pq = DPQ_new(N);
+
+  for(int i = 0; i < N; i++)
+  {
+    DPQ_insert(pq, i, dist[i]);
+  }//for
+
+
+  while(!DPQ_is_empty(pq))
+  {
+    node_t nextNode = DPQ_pop_min(pq);
+
+    for (edge_tgt_t const *tgt=graph_succs_begin(g,nextNode);tgt!=graph_succs_end(g,nextNode);++tgt)
+    {
+      if(!weight_is_inf(dist[nextNode]) &&  weight_less(weight_add(dist[nextNode], tgt->w), dist[tgt->v]))
+      {
+        dist[tgt->v] = weight_add(dist[nextNode], tgt->w);
+        pred[tgt->v] = nextNode;
+        edgesRelaxed++;
+      }//if
+
+      if(tgt->v == dst)
+      {
+        return sssp_result_new(N,src,dst,false,pred,dist,edgesRelaxed);
+      }//if
+
+    }//for
+  }//while
+
+  return sssp_result_new(N,src,dst,false,pred,dist,edgesRelaxed);
+}
+
+sp_result_t *astar_search(graph_t const *g, node_t src, node_t dst, weight_t const* h)
+{
+  long long unsigned int edgesRelaxed = 0;
+
+  size_t nextOpen = 0;
+
+  size_t N = graph_get_num_nodes(g);
+  weight_t *dist = CALLOC(weight_t, N);
+
+  path_t *p = CALLOC(path_t,N);
+
+  for(int i = 0; i < N; i++)
+  {
+    dist[i] = weight_inf();
+
+  }//for
+
+  dist[src] = weight_zero();
+
+  DPQ_t *pq = DPQ_new(N);
+  DPQ_insert(pq, src, weight_zero());
+
+  while(!DPQ_is_empty(pq))
+  {
+    node_t nextNode = DPQ_pop_min(pq);
+    path_set(p, nextOpen, nextNode);
+    nextOpen++;
+
+    if(nextNode == dst)
+    {
+       sp_result_new(src, dst, p,  edgesRelaxed);
+    }//if
+
+    for (edge_tgt_t const *tgt=graph_succs_begin(g,nextNode);tgt!=graph_succs_end(g,nextNode);++tgt)
+    {
+      if(!weight_is_inf(dist[nextNode]) &&  weight_less(weight_add(dist[nextNode], tgt->w), dist[tgt->v]))
+      {
+        dist[tgt->v] = weight_add(dist[nextNode], tgt->w);
+        pred[tgt->v] = nextNode;
+        edgesRelaxed++;
+      }//if
+
+      if(tgt->v == dst)
+      {
+         //sp_result_new(src, dst, p,  edgesRelaxed);
+      }//if
+
+    }//for
+  }//while
+
+ //sp_result_new(node_t src, node_t dst, path_t* p, weight_t, edgesRelaxed);
+}

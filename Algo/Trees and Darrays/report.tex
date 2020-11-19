@@ -1,0 +1,88 @@
+\documentclass{article}
+
+\title{COMP26120 Lab 5}
+\author{?}
+
+\begin{document}
+\maketitle
+
+% PART 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Complexity Analysis}
+\label{sec:complexity}
+
+\subsection{Iteration Sort}
+Best case senario for insertion sort is to literally be given a sorted array, in which case
+the sort iterates all of the items, giving a time complexity of n; \\
+
+  Worst case senario happens when the array is sorted in reverse order.
+Then, we have to iterate all of the elements (n), however with each of the bigger iterations, we have to have $(1 + 2 + 3 + ... + (n - 1))$ smaller iteration for the actual sorting. So when we combine the two we get: \\
+
+   $n(1 + 2 + 3 + ... + (n-1)) 
+=  1n + 2n + 3n + ... + n(n-1))
+=  1n + 2n + 3n + ... + n^2 - n$
+
+ which has n2 complexity \\
+
+where $x[i]$ represents the number of second ¨for¨ loops which need to be done for a particular
+element and $x[i] \in [0:n-2] $
+
+
+ The avarage case senario has the equation \\
+
+$   n(x1 + x2 + x3 + ... + (n-Xn-1))
+=  x1n + x2n + x3n + ... + n(n-Xn-1))
+=  x1n + x2n + x3n + ... + n2 - (Xn-1)n $ \\
+
+ which still has $n^2$ complexity 
+This makes the insertion sort inefficient when dealing with large files. \\
+
+
+
+\subsection{Quick Sort}
+
+  Best case senario occurs when the partitions are evenly balanced and the pivot is right in the middle
+after partitioning. \\
+
+In this case we have
+$cn + cn/2 + cn/4 + cn/8 + ...$
+which has $n\log_{2}n$ \\
+
+  Worst case senario occurs when the partitions are the most unbalanced (we have to partition every single element separately).
+$cn + c(n-1) + c(n-2) + ... + 2c$ \\
+
+  The avarage case senario occurs when each pivot is between the 1/4 to 3/4 of the overall lenght with
+3/4 of the elements on the right and 1/5 on the left of the pivot. Applyng this rule we get 
+$n\log_{2}n$
+
+%====================================
+\section{Experimental Analysis}
+\label{sec:initialExperiments}
+
+In this section we consider the question
+	\begin{quote}
+	Under what conditions is it better to perform linear search rather than binary search?
+	\end{quote}
+
+\subsection{Experimental Design}
+
+\subsection{Experimental Results}
+
+
+% PART 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Extending Experiment to Data Structures}
+\label{sec:part3}
+
+We now extend our previously analysis to consider the question
+\begin{quote}
+Under what conditions are different implementations of the dictionary data structure preferable?
+\end{quote}
+
+% PART 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusions}
+\label{sec:conclusions}
+% Give your conclusions from the above experiments 
+
+
+\end{document}

@@ -1,0 +1,80 @@
+1)
+    a) concat_finder.c:
+        A good amount of inserts, few contain checkups, 
+          a lot of tidying, a few queue empty checks,as many pop_mins as emtpy checks
+    b) sorting.c:
+        A lot of inserts (they depend on a given value "n"), no contain checks, 
+         a lot of tidying, a few (1) empty checks, 
+         some pop_mins (again depending on a given value "n")
+
+2)
+
+    Linked list:
+    a) Insertion - O(1)
+    b) Contains (Search) - O(n)
+    c) Empty - O(1)
+    d) tidy - O(n)
+    e) pop_min (Deletion) - O(n)
+
+    Sorted Linked list:
+    a) Insertion - O(n)
+    b) Contains(search) - O(n)
+    c) Empty - O(1)
+    d) tidy - O(n)
+    e) pop_min (Deletion) - O(1)
+
+    AVL Tree:
+    a) Insertion - O(logn)
+    b) Contains (Search) - O(logn)
+    c) Empty - O(1)
+    d) tidy - O(logn)
+    e) pop_min (Deletion) - O(logn)
+
+    Binary Heap
+    a) Insertion - O(logn)
+    b) Contains (Search) - O(n)
+    c) Empty - O(1)
+    d) tidy - O(n)
+    e) pop_min (Deletion)- O(logn)
+
+    Skip List
+    a) Insertion - O(n)
+    b) Contains (Search) - O(n)
+    c) Empty - O(1)
+    d) tidy - O(n)
+    e) pop_min (Deletion) - O(n)
+
+3)
+    Prediction For both of them it is going to be an AVL tree since it is objectively the best. I assume it mostly depends on the amount of data but if we consider a big amount of data an AVL tree is going to be the best.
+
+
+
+
+
+=======================================================================================================
+The tests show the following:
+
+SORTING:
+
+1.Binary Heap - 0m0.175s
+2.SkipList - 0m0.438s
+3.AVL Tree - 0m0.559s
+
+
+So I was wrong, Binary Heap is the fastest one here. I assume it is because the heap allows for easier faster pop_min
+
+
+CONCAT:
+1.SkipList - 0m0.002s
+2.AVL Tree - 0m0.528s
+3.Binary Heap - 0m0.907s
+
+I was wrong again and skiplist is the fastest here. I assume it is because finding the combination is faster when having levels
+
+I assume that sorting by string lenght alone will give he same result.
+
+
+
+
+
+
