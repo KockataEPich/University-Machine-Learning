@@ -1,0 +1,12 @@
+double current_best = 0;
+  // compute its value and its bound
+  for(int fix=1; fix<=Nitems+1; fix++){
+    frac_bound(mySol,fix);
+    // if the new bound is better than the last one
+    if(mySol->bound > current_best){
+      // put current_best = to its value
+      current_best = mySol->bound;
+      // store it in the priority queue
+      insert(mySol);
+    }  
+  }

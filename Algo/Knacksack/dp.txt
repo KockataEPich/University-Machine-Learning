@@ -1,0 +1,19 @@
+1. Simple subproblems
+2. Subproblem Optimality
+3. Subproblem overlap
+
+If we consider the following relationship for the general case of the 0/1 knapsack problem formulated in terms of the indexes k and w, where:
+	k - represents the subproblem k, which uses only items from the subset Sk.
+	w - represents the total amount of weight the subset Sw has
+The formula reads: the maximum total value of a subset of Sk from among all those subsets having total weight at most w.
+
+The formula can be written in mathematical terms using a recursion:
+
+base: 		B[0,w]=0for each w <= W
+general:	B[k,w] = B[k-1,w]  if wk > w 
+		         max{B[k-1,w], B[k-1,w-wk] + bk} else
+
+Looking at this recursion, we can argue that:
+	>because we use only two additional parameters, k and w, for defining a subproblem, the 0/1 knapsack problem has 1. Simple subproblems.
+	>it is comprehensive in optimizing the objective function in finding oprimal subproblems, so it fulfills 2. Subproblem Optimality
+	>it has 3. Subproblem overlap, because a subproblem can be reused many times inside the algorithm by future subproblems (example is an optimal subset of weight w - we keep adding it to other hopefully optimal subsets)

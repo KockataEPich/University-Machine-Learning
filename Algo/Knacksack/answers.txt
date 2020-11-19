@@ -1,0 +1,23 @@
+3 b)
+
+1. The enumeration method grows exponentially with. size, since it ch.ecks all possible combinations of solutions. On lab PC it depends on how much 
+it is considered a long time but I would personally say around 30 items which is around 18 minutes of time.
+
+2. Dynamic programming feels like the correct get the solution on all instances, because it calculates the value and weight for all possibilities, choosing the best one.
+ 
+   Greedy algorithm is not optimal in any of the trials.
+
+   Branch and bound terminates for the first case as it requires too big of a queue space.
+   The last case doesn't terminate.
+
+3. The dynamic programming is the best as it just uses a lot more memory since it has to store some values for the items, weights and so on. Thus, "memorising" patterns
+reduces computational time.
+
+   The greedy algorithm doesn't bother with calculating weiths and value combinations, it just sums up the best values. This is why if we rely on just summing values
+   the algorithm will find it easy otherwise it will be hard.
+ 
+   The branch and bound algorithm on hard cases as it has to create many children and their size might overflow the heep. This also requires a implementation of a priority
+   queue which also consumes computational resources.
+
+4. I personally believe that the dynamic programmin algorithm provides the most efficient solution to these problems. Since in today's age memory is relatively cheap
+and time and efficiency is of utmost importance this method gives the best possible outcome out of the others.
